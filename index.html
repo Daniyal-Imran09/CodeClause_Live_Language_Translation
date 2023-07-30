@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Live language Translator</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+</head>
+<body>
+  <div class="container">
+    <h1>Live language Translator</h1>
+    <div class="main">
+      <form>
+        <div class="leftcontainer">
+          <p id="dani" onclick="first2()"></p>
+          <textarea rows="15" cols="40" id="text1"></textarea>
+          <div class="labeloption">
+            <label for="languauge">
+              <select id="dropdown1">
+              </select>
+            </label>
+          </div>
+        </div>
+      </form>
+      <form>
+        <div class="rightcontainer">  
+          <textarea rows="15" cols="40" id="text2"></textarea>
+          <div class="labeloption">
+            <label for="languauge">
+              <select name="languauge" id="dropdown2">
+              </select>
+            </label>
+          </div>
+        </div>
+      </form>
+    </div>
+    <button onclick="translate2(event)">Translate</button>
+  </div>
+  
+
+<script>
+  function first1(){
+      //e.preventDefault();
+  document.getElementById('dani').innerHTML = 'urdu';
+  console.log("working")
+  }
+  
+  
+  
+  const translate1 = async ()=> {
+        const url = 'https://google-translate1.p.rapidapi.com/language/translate/v2/languages?target=en';
+  const options = {
+  method: 'GET',
+  headers: {
+  'Accept-Encoding': 'application/gzip',
+  'X-RapidAPI-Key': '3872936c04msh956841c16b63706p1a6af0jsn76f43301f3f9',
+  'X-RapidAPI-Host': 'google-translate1.p.rapidapi.com'
+  }
+  };
+  
+  try {
+  const response = await fetch(url, options);
+  const result = await response.json();
+  const dropdown = document.getElementById('dropdown2');
+  const dropdown1 = document.getElementById('dropdown1');
+  dani = result.data.languages
+  dani.forEach(language => {
+    const option = document.createElement('option');
+    console.log(language.language)
+  option.value = language.language;
+  option.textContent = language.name;;
+  dropdown.appendChild(option);
+  });
+  dani.forEach(language => {
+    const option = document.createElement('option');
+    console.log(language.language)
+  option.value = language.language;
+  option.textContent = language.name;;
+  dropdown1.appendChild(option);
+  });
+  console.log(result.data.languages.length);
+  } catch (error) {
+  console.error(error);
+  }
+    }
+  
+  
+  // Function to translate text using the language translation API
+  const translate2 = async (event)=> {
+  event.preventDefault();
+  const text = document.getElementById('text1').value;
+  console.log(text)
+  const targetLanguage = document.getElementById('dropdown2').value;
+  const sourceLanguage = document.getElementById('dropdown1').value;
+        const url = 'https://google-translate1.p.rapidapi.com/language/translate/v2';
+  const options = {
+  method: 'POST',
+  headers: {
+  'content-type': 'application/x-www-form-urlencoded',
+  'Accept-Encoding': 'application/gzip',
+  'X-RapidAPI-Key': '3872936c04msh956841c16b63706p1a6af0jsn76f43301f3f9',
+  'X-RapidAPI-Host': 'google-translate1.p.rapidapi.com'
+  },
+  body: new URLSearchParams({
+  q: text,
+  target: targetLanguage,
+  source: sourceLanguage
+  })
+  };
+  
+  try {
+  const response = await fetch(url, options);
+  const result = await response.json();
+  document.getElementById('text2').value = result.data.translations[0].translatedText
+  console.log(result.data.translations[0].translatedText);
+  } catch (error) {
+  console.error(error);
+  }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+  // Your function to run when the HTML page opens
+  translate1();
+  });
+  
+  </script>
+</body>
+</html>
